@@ -1,0 +1,139 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.log-reg{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.log-reg h1{
+    position: absolute;
+    display: flex;
+    top:0;
+    left: 0;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+}
+.log-reg .card{
+    margin-top: 120px;
+    
+}
+
+.submit-logreg{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+}
+.logreg-form{
+    padding: 25px;
+}
+.signup{
+    padding-top: 50px;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.form-check {
+    margin-left: 15px;
+}
+.username{
+    padding-right: 20px;
+}
+
+.sidebar{
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgb(33, 37, 41);
+    opacity: 1;
+    width: 15%;
+    height: 100%;
+    padding-top: 5%;
+}
+
+.sidebar .sidebar-content{
+    position: static;
+    display: flex;
+    color: #fff;
+    align-items:center;
+    justify-content:space-between;
+    padding: 0 25px;
+}
+.sidebar .sidebar-content .btn{
+    text-decoration: none;
+}
+.sidebar .sidebar-content .btn p i{
+    padding-right: 20px;
+}
+.sidebar .sidebar-content:hover{
+    background-color: #fff;
+    color: #111;
+}
+
+.contentmain{
+    position: absolute;
+    top: auto;
+    right: auto;
+    margin-left: 20%;
+    padding-top: 20px;
+    width: 75%;
+}
+.contentmain .mainpage{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 20px;  
+}
+.contentmain .mainpage h2{
+    display: block;
+    text-align: center;
+}
+.contentmain .mainpage img{
+    width: 200px;
+    height: auto;
+    text-align: center;
+}
+
+.contentmain .mainpage2{
+    padding-top: 20px;
+    width: 100%;
+}
+
+.contentmain .mainpage2 a{
+    text-decoration: none;
+    color: #111;
+}
+.contentmain .mainpage2 a .row.alert{
+    background-color: #D1D1D1;
+    margin-bottom: 0;
+    padding: 0.5rem 0.5rem;
+    border-bottom: 0.1px solid #111;
+}
+.contentmain .mainpage2 a .row.alert:hover{
+    background-color: #fff;
+    border: 0.1px solid #111;
+    
+}
+
+@media (max-width: 991px) {
+    
+    .contentmain{
+        margin-left: 0%;
+        padding: 0 20px;
+        width: 100%;
+    }
+    .sidebar,.tab-hide,.username li a i{
+        display: none;
+    }
+
+}
