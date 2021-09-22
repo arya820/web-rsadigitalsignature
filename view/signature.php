@@ -81,7 +81,7 @@ require_once("../controller/auth.php");
                         <tr>
                             <th>Ke</th>
                             <th>Nama File</th>
-                            <th>Tanggal</th>
+                            <th>Tanggal dan Waktu</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -150,7 +150,7 @@ require_once("../controller/auth.php");
 
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" name="signnow">Tanda tangan</button>
+                        <button type="submit" class="btn btn-primary" name="signnow">Tanda tangan & Kirim</button>
                     </div>
                 </form>
             </div>
@@ -164,7 +164,7 @@ require_once("../controller/auth.php");
     <script>
         get_prime = () => {
             let prime_list = [];
-            for (let i = 0; i <= 1000; i++) {
+            for (let i = 100; i <= 1000; i++) {
                 let flag = 0;
                 for (let j = 2; j < i; j++) {
                     if (i % j == 0) {

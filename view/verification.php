@@ -70,7 +70,7 @@ require_once("../controller/connect.php");
                         <tr>
                             <th class="tab-hide">Dari</th>
                             <th>Nama File</th>
-                            <th>Tanggal</th>
+                            <th>Tanggal dan Waktu</th>
                             <th>Hasil Verifikasi</th>
                         </tr>
                     </thead>
