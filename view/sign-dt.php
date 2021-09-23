@@ -11,6 +11,7 @@ $datas = $query->fetchAll(PDO::FETCH_ASSOC);
 foreach ($datas as $data) {
     $getData = $data['id'];
     $getPDF = $data['pdf_name'];
+    $getPDFdw = $data['pdf_newname'];
     $getTO = $data['user_received'];
     $getPubKeyN = $data['pubkey_n'];
     $getPubKeyE = $data['pubkey_e'];
@@ -136,7 +137,12 @@ foreach ($datas as $data) {
                     </tr>
                 </table>
             </div>
-            
+            <br>
+            <br>
+            <div class="d-flex justify-content-end">
+                <a class="btn btn-outline-primary me-3" href="../controller/download.php?id=<?php echo $getData ?>&file=<?php echo $getPDFdw?>">Download PDF</a>
+                
+            </div>
         </div>
     </section>
 

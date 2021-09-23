@@ -46,7 +46,7 @@ if (isset($_GET['verification'])) {
         $getSignId = $data['sign_id'];
         $getPubKeyN = $data['pubkey_n'];
         $getPubKeyE = $data['pubkey_e'];
-        $getPDF = $data['pdf_name'];
+        $getPDF = $data['pdf_newname'];
         $getSignV = $data['sign_value'];
     }
     $hash_values = sha3Hash($getPDF);
@@ -113,8 +113,8 @@ if (isset($_POST['vernow'])) {
                     }
                     $end_time = microtime(true);
                     $execution_time = ($end_time - $start_time);
-                    $sql = "INSERT INTO verification (sign_id, received_id, pubkey_n, pubkey_e, message_digest, sign_value, sign_by, ver_value, pdf_name, validation, process_time) 
-                    VALUES ('$signID', '$receivedID','$getN', '$getE', '$hash_values', '$getSignV', '$getSignBy', '$ver', '$pdf_newname', '$verify', '$execution_time')";
+                    $sql = "INSERT INTO verification (sign_id, received_id, pubkey_n, pubkey_e, message_digest, sign_value, sign_by, ver_value, pdf_name, pdf_newname, validation, process_time) 
+                    VALUES ('$signID', '$receivedID','$getN', '$getE', '$hash_values', '$getSignV', '$getSignBy', '$ver', '$pdf_name', '$pdf_newname', '$verify', '$execution_time')";
                     $query = $connect->query($sql);
                     if ($query) {
                         header("Location: ../view/verification.php?status=success&hex=$dec&ver=$ver");

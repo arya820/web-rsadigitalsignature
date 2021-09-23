@@ -97,8 +97,8 @@ if (isset($_POST['signnow'])) {
                 }
     
                 if (($username_r == $user_received) || !$user_received) {
-                    $sign_sql = "INSERT INTO signature (prime_p, prime_q, pubkey_n, pubkey_e, private_key, message_digest, sign_value, sign_byID, sign_by, pdf_name, user_received, process_time) VALUES 
-                    ('$prime_p', '$prime_q', '$n', '$e', '$d', '$hash_output', '$get_sign', '$senderID','$senderUN', '$pdf_newname', '$username_r', '$execution_time')";
+                    $sign_sql = "INSERT INTO signature (prime_p, prime_q, pubkey_n, pubkey_e, private_key, message_digest, sign_value, sign_byID, sign_by, pdf_name, pdf_newname, user_received, process_time) VALUES 
+                    ('$prime_p', '$prime_q', '$n', '$e', '$d', '$hash_output', '$get_sign', '$senderID','$senderUN', '$pdf_name', '$pdf_newname', '$username_r', '$execution_time')";
                     $sign_query = $connect->query($sign_sql);
     
     
@@ -115,12 +115,12 @@ if (isset($_POST['signnow'])) {
                         $sign_chk = $connect->query($sign_id);
                         $datas_sign = $sign_chk->fetchAll(PDO::FETCH_ASSOC);
                         foreach ($datas_sign as $data_sign) {
-                            if ($data_sign['pdf_name'] == $pdf_newname) {
+                            if ($data_sign['pdf_newname'] == $pdf_newname) {
                                 $sign_idf = $data_sign['id'];
                             }
                         }
-                        $ver_sql = "INSERT INTO verification (sign_id, received_id, sender_uname, pubkey_n, pubkey_e, sign_value, sign_by, pdf_name, validation, process_time) 
-                        VALUES ('$sign_idf', '$id_r', '$senderUN', '$n', '$e', '$get_sign', '$senderUN', '$pdf_newname', 'Belum diverifikasi', '$execution_time')";
+                        $ver_sql = "INSERT INTO verification (sign_id, received_id, sender_uname, pubkey_n, pubkey_e, sign_value, sign_by, pdf_name, pdf_newname, validation, process_time) 
+                        VALUES ('$sign_idf', '$id_r', '$senderUN', '$n', '$e', '$get_sign', '$senderUN', '$pdf_name','$pdf_newname', 'Belum diverifikasi', '$execution_time')";
                         $ver_query = $connect->query($ver_sql);
     
                         if ($sign_query && $ver_query) {

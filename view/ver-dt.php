@@ -11,6 +11,7 @@ $datas = $query->fetchAll(PDO::FETCH_ASSOC);
 foreach ($datas as $data) {
     $getData = $data['id'];
     $getPDF = $data['pdf_name'];
+    $getPDFdw = $data['pdf_newname'];
     $getFrom = $data['sender_uname'];
     $getPubKeyN = $data['pubkey_n'];
     $getPubKeyE = $data['pubkey_e'];
@@ -198,7 +199,7 @@ foreach ($datas as $data) {
             <div class="d-flex justify-content-end">
                 <?php 
                     if ($verification === "Valid" && $getFrom) {?>
-                    <a class="btn btn-outline-primary me-3" href="../controller/download.php?id=<?php echo $getData ?>&file=<?php echo $getPDF?>">Download PDF</a>
+                    <a class="btn btn-outline-primary me-3" href="../controller/download.php?id=<?php echo $getData ?>&file=<?php echo $getPDFdw?>">Download PDF</a>
                 <?php } else { ?>
                     <button class="btn btn-outline-primary me-3" href="" disabled>Download PDF</button>
                 <?php } ?>
