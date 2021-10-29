@@ -2,8 +2,7 @@
 require_once("../controller/connect.php");
 require_once("../controller/auth.php");
 
-function e_key($lambda_n)
-{
+function e_key($lambda_n){
     for ($e = 2; $e < $lambda_n; $e++) {
         if (gmp_strval(gmp_gcd($e, $lambda_n)) == 1) {
             return $e;
@@ -12,8 +11,7 @@ function e_key($lambda_n)
     return false;
 }
 
-function d_key($e, $lambda_n)
-{
+function d_key($e, $lambda_n){
     for ($d = 2; $d < $lambda_n; $d++) {
         if ($d * $e % $lambda_n == 1) {
             return $d;
@@ -22,8 +20,7 @@ function d_key($e, $lambda_n)
     return false;
 }
 
-function renderUser($connect)
-{
+function renderUser($connect){
     $user_check = "SELECT * FROM users";
     $uchk_query = $connect->query($user_check);
     $datas_user = $uchk_query->fetchAll(PDO::FETCH_ASSOC);
@@ -31,12 +28,12 @@ function renderUser($connect)
 }
 
 if (isset($_POST['signnow'])) {
+    // mulai waktu proses
     $start_time = microtime(true);
     $a = 1;
     for ($i = 1; $i <= 1000; $i++) {
         $a++;
     }
-
     $user_received = $_POST['username'];
     $prime_p = $_POST['pprime'];
     $prime_q = $_POST['qprime'];
@@ -84,10 +81,11 @@ if (isset($_POST['signnow'])) {
                 }
                 $get_sign = $data[$d] % $n;
     
-                // selesai hitung waktu eksekusi
+                // selesai hitung waktu proses
                 $end_time = microtime(true);
                 $execution_time = ($end_time - $start_time);
-    
+                
+                //cek user penerima di database
                 $datas_user = renderUser($connect);
                 foreach ($datas_user as $data_user) {
                     if ($data_user['username'] == $user_received) {
@@ -95,13 +93,14 @@ if (isset($_POST['signnow'])) {
                         $id_r = $data_user['id'];
                     }
                 }
-    
+                // username kosong atau tersedia
                 if (($username_r == $user_received) || !$user_received) {
+                    // simpan di database signature
                     $sign_sql = "INSERT INTO signature (prime_p, prime_q, pubkey_n, pubkey_e, private_key, message_digest, sign_value, sign_byID, sign_by, pdf_name, pdf_newname, user_received, process_time) VALUES 
                     ('$prime_p', '$prime_q', '$n', '$e', '$d', '$hash_output', '$get_sign', '$senderID','$senderUN', '$pdf_name', '$pdf_newname', '$username_r', '$execution_time')";
                     $sign_query = $connect->query($sign_sql);
     
-    
+                    //username kosong
                     if (!$user_received) {
                         if ($sign_query) {
                             header("Location: ../view/signature.php?status=sign-success");
@@ -109,7 +108,7 @@ if (isset($_POST['signnow'])) {
                             header("Location: ../view/signature.php?status=query-error");
                         }
                     }
-    
+                    // username tersedia
                     if ($username_r == $user_received) {
                         $sign_id = "SELECT * FROM signature";
                         $sign_chk = $connect->query($sign_id);
@@ -119,24 +118,21 @@ if (isset($_POST['signnow'])) {
                                 $sign_idf = $data_sign['id'];
                             }
                         }
-                        $ver_sql = "INSERT INTO verification (sign_id, received_id, sender_uname, pubkey_n, pubkey_e, sign_value, sign_by, pdf_name, pdf_newname, validation, process_time) 
-                        VALUES ('$sign_idf', '$id_r', '$senderUN', '$n', '$e', '$get_sign', '$senderUN', '$pdf_name','$pdf_newname', 'Belum diverifikasi', '$execution_time')";
+                        // simpan di database verification
+                        $ver_sql = "INSERT INTO verification (sign_id, received_id, sender_uname, sign_value, pdf_name, pdf_newname, validation) 
+                        VALUES ('$sign_idf', '$id_r', '$senderUN', '$get_sign', '$pdf_name','$pdf_newname', 'Belum diverifikasi')";
                         $ver_query = $connect->query($ver_sql);
     
                         if ($sign_query && $ver_query) {
-    
                             header("Location: ../view/signature.php?status=signsend-success");
                         } else {
                             header("Location: ../view/signature.php?status=query-error");
                         }
-                        
                     } 
-    
                 }
                 else {
                     header("Location: ../view/signature.php?status=username-notfound");
                 }
-    
             } else {
                 header("Location: ../view/signature.php?status=upload-error");
             }
@@ -144,7 +140,7 @@ if (isset($_POST['signnow'])) {
             header("Location: ../view/signature.php?status=ext-error");
         }
     }
-
 } else {
     die("access denied");
 }
+?>

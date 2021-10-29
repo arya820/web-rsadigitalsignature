@@ -19,10 +19,10 @@ require_once("../controller/connect.php");
 
 <body>
     <section>
-    <?php include("../view/partial/bar.php");?>
+        <?php include("../view/partial/bar.php"); ?>
 
         <div class="contentmain">
-        <div class="notification">
+            <div class="notification">
                 <!-- php -->
                 <?php if (isset($_GET['status'])) {
                     if ($_GET['status'] == 'failed') { ?>
@@ -64,7 +64,7 @@ require_once("../controller/connect.php");
             <div class="d-flex justify-content-end">
                 <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Upload PDF</button>
             </div>
-            <div class="mainpage2">
+            <div class="mainpage2 table-page">
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -76,54 +76,66 @@ require_once("../controller/connect.php");
                     </thead>
                     <tbody>
                         <?php
+
                         $id_userlog = $_SESSION['user']['id'];
-                        $sql = "SELECT * FROM verification WHERE received_id = $id_userlog ORDER BY date DESC";
+
+                        $halaman = (isset($_GET['page'])) ? (int) $_GET['page'] : 1;
+                        $batas = 5;
+                        $halaman_awal = ($halaman > 1) ? ($halaman * $batas) - $batas : 0;
+                        $previous = $halaman - 1;
+                        $next = $halaman + 1;
+                        $dataQuery = "SELECT * FROM verification WHERE received_id = $id_userlog";
+                        $dataCount = $connect->query($dataQuery)->rowCount();
+                        $dataTotal = ceil($dataCount / $batas);
+
+                        $sql = "SELECT * FROM verification WHERE received_id = $id_userlog ORDER BY date DESC LIMIT $halaman_awal,$batas";
                         $query = $connect->query($sql);
                         $datas = $query->fetchAll(PDO::FETCH_ASSOC);
-                        foreach ($datas as $data) { 
-                        $verification = $data['validation'];?>
+                        foreach ($datas as $data) {
+                            $verification = $data['validation']; ?>
 
-                            <tr>
-                                <td class="tab-hide">
+                            <tr class="tab-hide">
+                                <td>
                                     <?php if ($data['sender_uname']) {
                                         echo $data['sender_uname'];
                                     } else {
                                         switch ($verification) {
-                                            case 'Belum diverifikasi':?>
-                                                <p><?php echo ""?></p>
-                                                <?php break;
-                                            case 'Valid':?>
-                                                <p><?php echo "Diverifikasi"?></p>
-                                                <?php break;
-                                            case 'Tidak valid':?>
-                                                <p><?php echo "Diverifikasi"?></p>
-                                                <?php break;
+                                            case 'Belum diverifikasi': ?>
+                                                <p><?php echo "" ?></p>
+                                            <?php break;
+                                            case 'Valid': ?>
+                                                <p><?php echo "Diverifikasi" ?></p>
+                                            <?php break;
+                                            case 'Tidak valid': ?>
+                                                <p><?php echo "Diverifikasi" ?></p>
+                                    <?php break;
                                             default:
                                                 # code...
                                                 break;
                                         }
-                                    }?>
+                                    } ?>
                                 </td>
                                 <td><a style="color: blue;" href="../view/ver-dt.php?info=<?php echo $data['id'] ?>"><?php echo $data['pdf_name'] ?></a></td>
                                 <td><?php echo $data['date'] ?></td>
                                 <td><?php
-                                    
+
                                     switch ($verification) {
-                                        case 'Belum diverifikasi':?>
-                                            <p><?php echo $verification?></p>
-                                            <?php break;
-                                        case 'Valid':?>
-                                            <p style="color: green;"><?php echo $verification?></p>
-                                            <?php break;
-                                        case 'Tidak valid':?>
-                                            <p style="color: red;"><?php echo $verification?></p>
-                                            <?php break;
+                                        case 'Belum diverifikasi': ?>
+                                            <p><?php echo $verification ?></p>
+                                        <?php break;
+                                        case 'Valid': ?>
+                                            <p style="color: green;"><?php echo $verification ?></p>
+                                        <?php break;
+                                        case 'Tidak valid': ?>
+                                            <p style="color: red;"><?php echo $verification ?></p>
+                                    <?php break;
                                         default:
                                             # code...
                                             break;
                                     }
-                                
-                                ?></td>
+
+                                    ?>
+                                </td>
 
                             </tr>
                         <?php    }
@@ -135,7 +147,26 @@ require_once("../controller/connect.php");
 
 
             </div>
+            
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item">
+                            <a class="page-link" href="../view/verification.php?page=<?php if($halaman > 1){ echo $previous; }?>">Previous</a>
+                        </li>
+                        <?php
+                        for ($i=1; $i <= $dataTotal; $i++) { ?>
+                            <li class="page-item"><a class="page-link" href="../view/verification.php?page=<?php echo $i; ?>"><?php echo $i; ?></a></li>
+                            
+                        <?php }
+                        ?>
+                        <li class="page-item">
+                            <a class="page-link" href="../view/verification.php?page=<?php if($halaman < $dataCount){echo $next;}?>">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            
         </div>
+
     </section>
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -146,14 +177,14 @@ require_once("../controller/connect.php");
                 </div>
                 <form action="../controller/ver_controller.php" method="POST" enctype="multipart/form-data">
                     <div class="modal-body">
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Kunci Publik</label>
                             <span class="form-text">N = </span>
                             <input type="text" name="pubkeyn" id="pubkeyn" style="width: 60px;">
                             <span class="form-text">E = </span>
                             <input type="text" name="pubkeye" id="pubkeye" style="width: 40px;">
 
-                        </div>
+                        </div> -->
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Nilai Tanda Tangan</label>
                             <input type="text" class="form-control" id="signvalue" name="signvalue">

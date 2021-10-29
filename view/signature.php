@@ -75,7 +75,7 @@ require_once("../controller/auth.php");
             <div class="d-flex justify-content-end">
                 <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#uploadpdf">Upload PDF</button>
             </div>
-            <div class="mainpage2">
+            <div class="mainpage2 table-page">
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -87,7 +87,18 @@ require_once("../controller/auth.php");
                     <tbody>
                         <?php
                         $id_userlog = $_SESSION['user']['id'];
-                        $sql = "SELECT * FROM signature WHERE sign_byID = $id_userlog ORDER BY date DESC";
+
+                        $halaman = (isset($_GET['page'])) ? (int) $_GET['page'] : 1;
+                        $batas = 5;
+                        $halaman_awal = ($halaman > 1) ? ($halaman * $batas) - $batas : 0;
+                        $previous = $halaman - 1;
+                        $next = $halaman + 1;
+                        $dataQuery = "SELECT * FROM signature WHERE sign_byID = $id_userlog";
+                        $dataCount = $connect->query($dataQuery)->rowCount();
+                        $dataTotal = ceil($dataCount / $batas);
+
+
+                        $sql = "SELECT * FROM signature WHERE sign_byID = $id_userlog ORDER BY date DESC LIMIT $halaman_awal,$batas";
                         $query = $connect->query($sql);
                         $datas = $query->fetchAll(PDO::FETCH_ASSOC);
                         foreach ($datas as $data) { ?>
@@ -114,6 +125,22 @@ require_once("../controller/auth.php");
 
 
             </div>
+            <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item">
+                            <a class="page-link" href="../view/signature.php?page=<?php if($halaman > 1){ echo $previous; }?>">Previous</a>
+                        </li>
+                        <?php
+                        for ($i=1; $i <= $dataTotal; $i++) { ?>
+                            <li class="page-item"><a class="page-link" href="../view/signature.php?page=<?php echo $i; ?>"><?php echo $i; ?></a></li>
+                            
+                        <?php }
+                        ?>
+                        <li class="page-item">
+                            <a class="page-link" href="../view/signature.php?page=<?php if($halaman < $dataCount){echo $next;}?>">Next</a>
+                        </li>
+                    </ul>
+                </nav>
         </div>
     </section>
 
@@ -162,8 +189,7 @@ require_once("../controller/auth.php");
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js" integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous"></script>
 
     <script>
-        get_prime = () => {
-            let prime_list = [];
+        let prime_list = [];
             for (let i = 100; i <= 1000; i++) {
                 let flag = 0;
                 for (let j = 2; j < i; j++) {
@@ -177,14 +203,12 @@ require_once("../controller/auth.php");
                     prime_list.push(i);
                 }
             }
-            let prime = prime_list[Math.floor(Math.random() * prime_list.length)];
-            return prime;
-        }
+        
         primeGenerate = () => {
 
 
-            let primeP = get_prime();
-            let primeQ = get_prime();
+            let primeP = prime_list[Math.floor(Math.random() * prime_list.length)];
+            let primeQ = prime_list[Math.floor(Math.random() * prime_list.length)];
 
             document.getElementById("prime_p").setAttribute("value", primeP);
             document.getElementById("prime_q").setAttribute("value", primeQ);

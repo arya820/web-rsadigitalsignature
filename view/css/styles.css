@@ -108,6 +108,9 @@
     padding-top: 20px;
     width: 100%;
 }
+.contentmain .mainpage2.table-page{
+    height: 350px;
+}
 
 .contentmain .mainpage2 a{
     text-decoration: none;
