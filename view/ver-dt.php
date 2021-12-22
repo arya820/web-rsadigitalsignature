@@ -16,8 +16,10 @@ foreach ($datas as $data) {
     $getPubKeyN = $data['pubkey_n'];
     $getPubKeyE = $data['pubkey_e'];
     $getMD = $data['message_digest'];
+    $getSignVid = $data['signv_id'];
     $getSignV = $data['sign_value'];
     $getSignBy = $data['sign_by'];
+    $getVer = $data['ver_value'];
     $verification = $data['validation'];
     $getDate = $data['date'];
     $getTimePr = $data['process_time'];
@@ -97,12 +99,12 @@ foreach ($datas as $data) {
                 <?php if (isset($_GET['verify'])) {
                     if ($_GET['verify'] == 'failed') { ?>
                         <div class="alert alert-danger" role="alert">
-                            Gagal Verifikasi
+                            Verification Failed
                         </div>
                     <?php } ?>
                     <?php if ($_GET['verify'] == 'success') { ?>
                         <div class="alert alert-success" role="alert">
-                            Verifikasi Sukses
+                            Verification Success
                         </div>
                     <?php } ?>
                 <?php } ?>
@@ -113,68 +115,94 @@ foreach ($datas as $data) {
             <br>
             <br>
                 <h3><?php echo $getPDF?></h3>
-                <table style="width: 100%;">
+                <table class="dt-table">
                     <tr>
-                        <th>Dari</th>
-                        <td>:</td>
-                        <td><?php echo $getFrom; ?></td>
+                        <th class="dt-title">From</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php echo $getFrom; ?></td>
                     </tr>
                     <tr>
-                        <th>Kunci Publik N</th>
-                        <td>:</td>
-                        <td><?php echo $getPubKeyN;?></td>
+                        <th class="dt-title">Public Key n</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php if ($getPubKeyN) {
+                            echo $getPubKeyN;
+                        } else {
+                            echo "Not Verified";
+                        }?></td>
                     </tr>
                     <tr>
-                        <th>Kunci Publik E</th>
-                        <td>:</td>
-                        <td><?php echo $getPubKeyE ?></td>
+                        <th class="dt-title">Public Key e</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php if ($getPubKeyE) {
+                            echo $getPubKeyE;
+                        } else {
+                            echo "Not Verified";
+                        }?></td>
                     </tr>
                     <tr>
-                        <th>Message Digest</th>
-                        <td>:</td>
-                        <td><?php if ($getMD) {
+                        <th class="dt-title">Message Digest</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php if ($getMD) {
                             echo $getMD;
                         } else {
-                            echo "Belum Diverifikasi";
+                            echo "Not Verified";
                         }?></td>
                     </tr>
                     <tr>
-                        <th>Nilai Tanda Tangan</th>
-                        <td>:</td>
-                        <td><?php if ($getSignV) {
+                        <th class="dt-title">Verification Digest</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php if ($getVer) {
+                            echo $getVer;
+                        } else {
+                            echo "Not Verified";
+                        }?></td>
+                    </tr>
+                    <tr>
+                        <th class="dt-title">Signature ID</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php if ($getSignVid) {
+                            echo $getSignVid;
+                        } else {
+                            echo "Not Verified";
+                        }?></td>
+                    </tr>
+                    <tr>
+                        <th class="dt-title">Signature</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php if ($getSignV) {
                             echo $getSignV;
                         } else {
-                            echo "Belum Diverifikasi";
+                            echo "Not Verified";
                         }?></td>
                     </tr>
                     <tr>
-                        <th>Tanda Tangan oleh</th>
-                        <td>:</td>
-                        <td><?php if ($getSignBy) {
+                        <th class="dt-title">Sign By</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php if ($getSignBy) {
                             echo $getSignBy;
                         } else {
-                            echo "Belum Diverifikasi";
+                            echo "Not Verified";
                         }?></td>
                     </tr>
                     <tr>
-                        <th>Tanggal</th>
-                        <td>:</td>
-                        <td><?php echo $getDate ?></td>
+                        <th class="dt-title">Date & Time</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php echo $getDate ?></td>
                     </tr>
                     <tr>
-                        <th>Hasil Validasi</th>
-                        <td>:</td>
+                        <th class="dt-title">Verification Result</th>
+                        <td class="dt-dot">:</td>
                         
                             <?php 
                             switch ($verification) {
-                                case 'Belum diverifikasi':?>
-                                    <td><?php echo $verification?></td>
+                                case 'Not Verified':?>
+                                    <td class="dt-value"><?php echo $verification?></td>
                                     <?php break;
                                 case 'Valid':?>
-                                    <td style="color: green;"><?php echo $verification?></td>
+                                    <td class="dt-value" style="color: green;"><?php echo $verification?></td>
                                     <?php break;
-                                case 'Tidak valid':?>
-                                    <td style="color: red;"><?php echo $verification?></td>
+                                case 'Not Valid':?>
+                                    <td class="dt-value" style="color: red;"><?php echo $verification?></td>
                                     <?php break;
                                 default:
                                     # code...
@@ -184,12 +212,12 @@ foreach ($datas as $data) {
                         
                     </tr>
                     <tr>
-                        <th>Waktu Proses</th>
-                        <td>:</td>
-                        <td><?php if ($getTimePr) {
+                        <th class="dt-title">Process Time</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php if ($getTimePr) {
                             echo $getTimePr;
                         } else {
-                            echo "Belum Diverifikasi";
+                            echo "Not Verified";
                         }?></td>
                     </tr>
                 </table>
@@ -206,7 +234,7 @@ foreach ($datas as $data) {
 
                 <?php
                 if ($verification === "Valid" || $verification === "Tidak valid") { ?>
-                    <button class="btn btn-primary" href="" disabled>Verifikasi</button>
+                    <button class="btn btn-primary" href="" disabled>Verify Now</button>
                 <?php } else { ?>
                     <a href="../controller/ver_controller.php?verification=<?php echo $getData ?>"class="btn btn-primary">Verifikasi</a>
                 <?php }

@@ -27,42 +27,42 @@ require_once("../controller/auth.php");
                 <?php if (isset($_GET['status'])) {
                     if ($_GET['status'] == 'upload-error') { ?>
                         <div class="alert alert-danger" role="alert">
-                            Tidak dapat mengupload pdf
+                            Can't upload PDF
                         </div>
                     <?php } ?>
                     <?php if ($_GET['status'] == 'primes-error') { ?>
                         <div class="alert alert-danger" role="alert">
-                            Bilangan prima tidak di generate
+                            Prime Numbers Not Generated
                         </div>
                     <?php } ?>
                     <?php if ($_GET['status'] == 'sign-success') { ?>
                         <div class="alert alert-success" role="alert">
-                            Tanda Tangan file pdf berhasil!
+                            Signature Success!
                         </div>
                     <?php } ?>
                     <?php if ($_GET['status'] == 'query-error') { ?>
                         <div class="alert alert-danger" role="alert">
-                            Terjadi Kesalahan dalam query
+                            Database Query Error
                         </div>
                     <?php } ?>
                     <?php if ($_GET['status'] == 'primes-same') { ?>
                         <div class="alert alert-danger" role="alert">
-                            Kedua bilangan prima bernilai sama
+                            Both Prime Numbers are Same
                         </div>
                     <?php } ?>
                     <?php if ($_GET['status'] == 'ext-error') { ?>
                         <div class="alert alert-danger" role="alert">
-                            File bukan berformat pdf
+                            File isn't PDF Format
                         </div>
                     <?php } ?>
                     <?php if ($_GET['status'] == 'signsend-success') { ?>
                         <div class="alert alert-success" role="alert">
-                            Tanda Tangan dan pengiriman file pdf berhasil!
+                            Signature and Send PDF Success!
                         </div>
                     <?php } ?>
                     <?php if ($_GET['status'] == 'username-notfound') { ?>
                         <div class="alert alert-danger" role="alert">
-                            Username tidak dapat ditemukan
+                            Username Not Found
                         </div>
                 <?php }
                 } ?>
@@ -79,9 +79,9 @@ require_once("../controller/auth.php");
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Ke</th>
-                            <th>Nama File</th>
-                            <th>Tanggal dan Waktu</th>
+                            <th>Send To</th>
+                            <th>File Name</th>
+                            <th>Date & Time</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -158,16 +158,16 @@ require_once("../controller/auth.php");
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
                             <input type="text" class="form-control" id="username" name="username">
-                            <div class="form-text">Username dapat dikosongkan</div>
+                            <div class="form-text">Username can Empty</div>
                         </div>
                         <div class="mb-3">
-                            <label for="generate" class="form-label">Generate Bilangan Prima</label>
+                            <label for="generate" class="form-label">Prime Numbers Generate</label>
                             <br>
                             <button class="btn btn-outline-secondary" onclick="primeGenerate();return false;">Generate</button>
                             <span class="form-text">p = </span>
-                            <input type="text" name="pprime" id="prime_p" style="width: 40px;" readonly>
+                            <input type="text" name="pprime" id="prime_p" style="width: 40px;" value="499" readonly>
                             <span class="form-text">q = </span>
-                            <input type="text" name="qprime" id="prime_q" style="width: 40px;" readonly>
+                            <input type="text" name="qprime" id="prime_q" style="width: 40px;" value="503" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="generate" class="form-label">Upload PDF</label>
@@ -177,7 +177,7 @@ require_once("../controller/auth.php");
 
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" name="signnow">Tanda tangan & Kirim</button>
+                        <button type="submit" class="btn btn-primary" name="signnow">Sign & Send</button>
                     </div>
                 </form>
             </div>

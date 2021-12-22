@@ -50,7 +50,7 @@
         </div>
     </div>
     <div class="signup">
-        <p>Belum punya akun?</p>
+        <p>Don't Have Account?</p>
         <a href="registration.php">Sign up</a>
     </div>
 

@@ -27,32 +27,32 @@ require_once("../controller/connect.php");
                 <?php if (isset($_GET['status'])) {
                     if ($_GET['status'] == 'failed') { ?>
                         <div class="alert alert-danger" role="alert">
-                            Gagal Verifikasi
+                            Verification Failed
                         </div>
                     <?php } ?>
                     <?php if ($_GET['status'] == 'pdf-failed') { ?>
                         <div class="alert alert-danger" role="alert">
-                            Gagal mengupload pdf
+                            Can't upload PDF
                         </div>
                     <?php } ?>
                     <?php if ($_GET['status'] == 'ext-error') { ?>
                         <div class="alert alert-danger" role="alert">
-                            Gagal mengupload pdf
+                            File isn't PDF Format
                         </div>
                     <?php } ?>
                     <?php if ($_GET['status'] == 'input-error') { ?>
                         <div class="alert alert-danger" role="alert">
-                            public key atau nilai tanda tangan tidak diisi
+                            Signature ID Not Filled
                         </div>
                     <?php } ?>
                     <?php if ($_GET['status'] == 'input-notfound') { ?>
                         <div class="alert alert-danger" role="alert">
-                            public key atau nilai tanda tangan tidak tersedia
+                            Signature ID Not Found
                         </div>
                     <?php } ?>
                     <?php if ($_GET['status'] == 'success') { ?>
                         <div class="alert alert-success" role="alert">
-                            Verifikasi Sukses
+                            Verification Success
                         </div>
                     <?php } ?>
                 <?php } ?>
@@ -68,10 +68,10 @@ require_once("../controller/connect.php");
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th class="tab-hide">Dari</th>
-                            <th>Nama File</th>
-                            <th>Tanggal dan Waktu</th>
-                            <th>Hasil Verifikasi</th>
+                            <th>Sent By</th>
+                            <th>File Name</th>
+                            <th>Date & Time</th>
+                            <th>Verification Result</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -100,14 +100,14 @@ require_once("../controller/connect.php");
                                         echo $data['sender_uname'];
                                     } else {
                                         switch ($verification) {
-                                            case 'Belum diverifikasi': ?>
+                                            case 'Not Verified': ?>
                                                 <p><?php echo "" ?></p>
                                             <?php break;
                                             case 'Valid': ?>
-                                                <p><?php echo "Diverifikasi" ?></p>
+                                                <p><?php echo "Verified" ?></p>
                                             <?php break;
-                                            case 'Tidak valid': ?>
-                                                <p><?php echo "Diverifikasi" ?></p>
+                                            case 'Not Valid': ?>
+                                                <p><?php echo "Verified" ?></p>
                                     <?php break;
                                             default:
                                                 # code...
@@ -120,13 +120,13 @@ require_once("../controller/connect.php");
                                 <td><?php
 
                                     switch ($verification) {
-                                        case 'Belum diverifikasi': ?>
+                                        case 'Not Verified': ?>
                                             <p><?php echo $verification ?></p>
                                         <?php break;
                                         case 'Valid': ?>
                                             <p style="color: green;"><?php echo $verification ?></p>
                                         <?php break;
-                                        case 'Tidak valid': ?>
+                                        case 'Not Valid': ?>
                                             <p style="color: red;"><?php echo $verification ?></p>
                                     <?php break;
                                         default:
@@ -186,7 +186,7 @@ require_once("../controller/connect.php");
 
                         </div> -->
                         <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Nilai Tanda Tangan</label>
+                            <label for="exampleInputEmail1" class="form-label">Signature ID</label>
                             <input type="text" class="form-control" id="signvalue" name="signvalue">
 
                         </div>

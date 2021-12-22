@@ -16,9 +16,12 @@ foreach ($datas as $data) {
     $getPubKeyN = $data['pubkey_n'];
     $getPubKeyE = $data['pubkey_e'];
     $getMD = $data['message_digest'];
+    $getSignVid = $data['signv_id'];
     $getSignV = $data['sign_value'];
     $getSignBy = $data['sign_by'];
     $getDate = $data['date'];
+    $getTimePrK = $data['time_k'];
+    $getTimePrS = $data['time_s'];
     $getTimePr = $data['process_time'];
 }
 ?>
@@ -90,50 +93,65 @@ foreach ($datas as $data) {
         <div class="contentmain">
             
             <div class="mainpage2">
-            <a href="signature.php" type="button" class="btn btn-link" style="color: blue;">Kembali</a>
-            <br>
-            <br>
+                <a href="signature.php" type="button" class="btn btn-link" style="color: blue;">Kembali</a>
+                <br>
+                <br>
                 <h3><?php echo $getPDF?></h3>
-                <table style="width: 100%">
+                <table class="dt-table">
                     <tr>
-                        <th>Dikirim Ke</th>
-                        <td>:</td>
-                        <td><?php echo $getTO ?></td>
+                        <th class="dt-title">Send To</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php echo $getTO ?></td>
                     </tr>
                     <tr>
-                        <th>Kunci Publik n</th>
-                        <td>:</td>
-                        <td><?php echo $getPubKeyN ?></td>
+                        <th class="dt-title">Public Key n</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php echo $getPubKeyN ?></td>
                     </tr>
                     <tr>
-                        <th>Kunci Publik e</th>
-                        <td>:</td>
-                        <td><?php echo $getPubKeyE ?></td>
+                        <th class="dt-title">Public Key e</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php echo $getPubKeyE ?></td>
                     </tr>
                     <tr>
-                        <th>Message Digest</th>
-                        <td>:</td>
-                        <td><?php echo $getMD ?></td>
+                        <th class="dt-title">Message Digest</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php echo $getMD ?></td>
                     </tr>
                     <tr>
-                        <th>Nilai Tanda Tangan</th>
-                        <td>:</td>
-                        <td><?php echo $getSignV ?></td>
+                        <th class="dt-title">Signature ID</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php echo $getSignVid ?></td>
                     </tr>
                     <tr>
-                        <th>Tanda Tangan oleh</th>
-                        <td>:</td>
-                        <td><?php echo $getSignBy ?></td>
+                        <th class="dt-title">Signature</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php echo $getSignV ?></td>
                     </tr>
                     <tr>
-                        <th>Tanggal</th>
-                        <td>:</td>
-                        <td><?php echo $getDate?></td>
+                        <th class="dt-title">Sign By</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php echo $getSignBy ?></td>
                     </tr>
                     <tr>
-                        <th>Waktu Proses</th>
-                        <td>:</td>
-                        <td><?php echo $getTimePr ?></td>
+                        <th class="dt-title">Date & Time</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php echo $getDate?></td>
+                    </tr>
+                    <tr>
+                        <th class="dt-title">Key Process Time</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php echo $getTimePrK ?></td>
+                    </tr>
+                    <tr>
+                        <th class="dt-title">Signature Process Time</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php echo $getTimePrS ?></td>
+                    </tr>
+                    <tr>
+                        <th class="dt-title">Total Process Time</th>
+                        <td class="dt-dot">:</td>
+                        <td class="dt-value"><?php echo $getTimePr ?></td>
                     </tr>
                 </table>
             </div>

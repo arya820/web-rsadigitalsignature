@@ -3,16 +3,33 @@ require_once("../controller/connect.php");
 require_once("../controller/auth.php");
 
 function verification($getSignV, $getPubKeyN, $getPubKeyE){
-    $data[0] = 1;
-    for ($i=0; $i <= $getPubKeyE ; $i++) { 
-        $rest[$i] = pow($getSignV, 1) % $getPubKeyN;
-        if ($data[$i] > $getPubKeyN) {
-            $data[$i+1] = $data[$i] * $rest[$i] % $getPubKeyN;
-        } else {
-            $data[$i+1] = $data[$i] * $rest[$i];
+    $signs = explode(":",$getSignV);
+    $ver_array = [];
+    foreach ($signs as $sign) {
+        $sign_dec = hexdec($sign);
+        $data[0] = 1;
+        for ($i=0; $i <= $getPubKeyE ; $i++) { 
+            $rest[$i] = pow($sign_dec, 1) % $getPubKeyN;
+            if ($data[$i] > $getPubKeyN) {
+                $data[$i+1] = $data[$i] * $rest[$i] % $getPubKeyN;
+            } else {
+                $data[$i+1] = $data[$i] * $rest[$i];
+            } 
+        }
+        $get_ver = $data[$getPubKeyE] % $getPubKeyN;
+        array_push($ver_array, dechex($get_ver));
+    }
+    $newVer = [];
+    foreach ($ver_array as $ver) {
+        if (strlen($ver) >= 4) {
+            array_push($newVer, $ver);
+        }
+        else if (strlen($ver) < 4) {
+            $ver_combine = "0".$ver;
+            array_push($newVer, $ver_combine);
         } 
     }
-    $get_ver = $data[$getPubKeyE] % $getPubKeyN;
+    $get_ver = implode("", $newVer);
     return $get_ver;
 }
 
@@ -23,17 +40,9 @@ function sha3Hash($getPDF){
     return $hash_output;
 }
 
-function hashToDec($hash_output){
-    $hash_dec = substr(hexdec($hash_output), 0, 5) * 1000;
-    return $hash_dec;
-}
-
 // Mulai waktu proses
 $start_time = microtime(true);
-$a = 1;
-for ($i = 1; $i <= 1000; $i++) {
-    $a++;
-}
+
 // verifikasi langsung dari pengirim
 if (isset($_GET['verification'])) {
     $dataID = $_GET['verification'];
@@ -58,14 +67,13 @@ if (isset($_GET['verification'])) {
     }
     // hashing pdf
     $hash_values = sha3Hash($getPDF);
-    $dec = hashToDec($hash_values);
     //proses verifikasi
     $ver = verification($getSignV, $getPubKeyN, $getPubKeyE);
     //bandingkan verifikasi dengan nilai message digest
-    if ($ver == $dec) {
+    if ($ver == $hash_values) {
         $verify = "Valid";
     } else {
-        $verify = "Tidak valid";
+        $verify = "Not Valid";
     }
     // selesai waktu proses
     $end_time = microtime(true);
@@ -74,7 +82,7 @@ if (isset($_GET['verification'])) {
     $sql = "UPDATE verification SET pubkey_n = '$getPubKeyN', pubkey_e = '$getPubKeyE', message_digest = '$hash_values', sign_by = '$getSignBy' , ver_value = '$ver', validation = '$verify', process_time = '$execution_time' WHERE id=$getID AND sign_id = $getSignId";
     $query = $connect->query($sql);
     if ($query) {
-        header("Location: ../view/ver-dt.php?info=$dataID&verify=success&hex=$dec&ver=$ver");
+        header("Location: ../view/ver-dt.php?info=$dataID&verify=success&hex=$hash_values&ver=$ver");
     } else {
         header("Location: ../view/ver-dt.php?info=$dataID&verify=failed");
     }
@@ -92,17 +100,18 @@ if (isset($_POST['vernow'])) {
         $ext = pathinfo($pdf_name, PATHINFO_EXTENSION);
         if ($ext == 'pdf') {
             // cek id signature
-            $check_data = "SELECT * FROM signature WHERE sign_value = $signValue";
+            $check_data = "SELECT * FROM signature WHERE signv_id = $signValue";
             $query = $connect->query($check_data);
             $querydatas = $query->fetchAll(PDO::FETCH_ASSOC);
             foreach ($querydatas as $querydata) {
                 $signID = $querydata['id'];
                 $getSignV = $querydata['sign_value'];
+                $getSignVid = $querydata['signv_id'];
                 $getSignBy = $querydata['sign_by'];
                 $getN = $querydata['pubkey_n'];
                 $getE = $querydata['pubkey_e'];
             }
-            if ($getSignV === $signValue) {
+            if ($getSignVid === $signValue) {
                 //upload pdf
                 $dir = "../pdffiles/";
                 $pdf_newname =  "(".date("Ymd-His").")".$pdf_name;
@@ -110,24 +119,23 @@ if (isset($_POST['vernow'])) {
                 if ($pdf_upload) {
                     // hashing pdf
                     $hash_values = sha3Hash($pdf_newname);
-                    $dec = hashToDec($hash_values);
                     // proses verifikasi
                     $ver = verification($getSignV, $getN, $getE);
                     //bandingkan verifikasi dengan nilai message digest
-                    if ($ver == $dec) {
+                    if ($ver == $hash_values) {
                         $verify = "Valid";
                     } else {
-                        $verify = "Tidak valid";
+                        $verify = "Not Valid";
                     }
                     // selesai waktu proses
                     $end_time = microtime(true);
                     $execution_time = ($end_time - $start_time);
                     // simpan di database verification
-                    $sql = "INSERT INTO verification (sign_id, received_id, pubkey_n, pubkey_e, message_digest, sign_value, sign_by, ver_value, pdf_name, pdf_newname, validation, process_time) 
-                    VALUES ('$signID', '$receivedID','$getN', '$getE', '$hash_values', '$getSignV', '$getSignBy', '$ver', '$pdf_name', '$pdf_newname', '$verify', '$execution_time')";
+                    $sql = "INSERT INTO verification (sign_id, received_id, pubkey_n, pubkey_e, message_digest, signv_id, sign_value, sign_by, ver_value, pdf_name, pdf_newname, validation, process_time) 
+                    VALUES ('$signID', '$receivedID','$getN', '$getE', '$hash_values', '$getSignVid', '$getSignV', '$getSignBy', '$ver', '$pdf_name', '$pdf_newname', '$verify', '$execution_time')";
                     $query = $connect->query($sql);
                     if ($query) {
-                        header("Location: ../view/verification.php?status=success&hex=$dec&ver=$ver");
+                        header("Location: ../view/verification.php?status=success&hex=$hash_values&ver=$ver");
                     } else {
                         header("Location: ../view/verification.php?status=failed");
                     }
@@ -135,14 +143,12 @@ if (isset($_POST['vernow'])) {
                     header("Location: ../view/verification.php?status=pdf-failed");
                 }
             } else {
-                header("Location: ../view/verification.php?status=input-notfound");
+                header("Location: ../view/verification.php?status=input-notfound&sign=$getSignFr");
             } 
         } else {
             header("Location: ../view/verification.php?status=ext-error");
-        }
-        
+        }     
     }
-
 }
 else {
     die("Access Denied!");

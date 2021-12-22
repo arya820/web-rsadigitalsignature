@@ -28,12 +28,9 @@ function renderUser($connect){
 }
 
 if (isset($_POST['signnow'])) {
-    // mulai waktu proses
-    $start_time = microtime(true);
-    $a = 1;
-    for ($i = 1; $i <= 1000; $i++) {
-        $a++;
-    }
+    // mulai waktu proses kunci
+    $start_timeK = microtime(true);
+    
     $user_received = $_POST['username'];
     $prime_p = $_POST['pprime'];
     $prime_q = $_POST['qprime'];
@@ -56,7 +53,14 @@ if (isset($_POST['signnow'])) {
             $lambda_n = ($prime_p - 1) * ($prime_q - 1);
             $e = e_key($lambda_n);
             $d = d_key($e, $lambda_n);
-    
+            
+            // selesai waktu kunci
+            $end_timeK = microtime(true);
+            $execution_timeK = ($end_timeK - $start_timeK);
+
+            // waktu proses signature
+            $start_timeS = microtime(true);
+            
             // pindahkan pdf
             $dir = "../pdffiles/";
             $pdf_newname = $senderUN . "_" . date("Ymd-His") . "_" . $pdf_name;
@@ -66,25 +70,31 @@ if (isset($_POST['signnow'])) {
                 // hashing pdf
                 $hash_input = file_get_contents($dir . $pdf_newname);
                 $hash_output = hash('sha3-256', $hash_input);
-    
-                $hash_dec = substr(hexdec($hash_output), 0, 5) * 1000;
+                $hash_array = str_split($hash_output, 4);
     
                 // proses signature
-                $data[0] = 1;
-                for ($i = 0; $i <= $d; $i++) {
-                    $rest[$i] = pow($hash_dec, 1) % $n;
-                    if ($data[$i] > $n) {
-                        $data[$i + 1] = $data[$i] * $rest[$i] % $n;
-                    } else {
-                        $data[$i + 1] = $data[$i] * $rest[$i];
+                $sign_array = [];
+                foreach ($hash_array as $hash_value) {
+                    $data[0] = 1;
+                    $mValue = hexdec($hash_value);
+                    for ($i = 0; $i <= $d; $i++) {
+                        $rest[$i] = pow($mValue, 1) % $n;
+                        if ($data[$i] > $n) {
+                            $data[$i + 1] = $data[$i] * $rest[$i] % $n;
+                        } else {
+                            $data[$i + 1] = $data[$i] * $rest[$i];
+                        }
                     }
+                    $get_sign = $data[$d] % $n;
+                    array_push($sign_array, dechex($get_sign));
                 }
-                $get_sign = $data[$d] % $n;
-    
-                // selesai hitung waktu proses
-                $end_time = microtime(true);
-                $execution_time = ($end_time - $start_time);
+                $signv_id = hexdec($sign_array[0].$sign_array[1]);
+                $sign_value = implode(":", $sign_array);
+                // selesai hitung waktu proses signature
+                $end_timeS = microtime(true);
+                $execution_timeS = ($end_timeS - $start_timeS);
                 
+                $execution_time = $execution_timeK + $execution_timeS;
                 //cek user penerima di database
                 $datas_user = renderUser($connect);
                 foreach ($datas_user as $data_user) {
@@ -96,8 +106,8 @@ if (isset($_POST['signnow'])) {
                 // username kosong atau tersedia
                 if (($username_r == $user_received) || !$user_received) {
                     // simpan di database signature
-                    $sign_sql = "INSERT INTO signature (prime_p, prime_q, pubkey_n, pubkey_e, private_key, message_digest, sign_value, sign_byID, sign_by, pdf_name, pdf_newname, user_received, process_time) VALUES 
-                    ('$prime_p', '$prime_q', '$n', '$e', '$d', '$hash_output', '$get_sign', '$senderID','$senderUN', '$pdf_name', '$pdf_newname', '$username_r', '$execution_time')";
+                    $sign_sql = "INSERT INTO signature (prime_p, prime_q, pubkey_n, pubkey_e, private_key, message_digest, signv_id, sign_value, sign_byID, sign_by, pdf_name, pdf_newname, user_received, time_k, time_s,process_time) VALUES 
+                    ('$prime_p', '$prime_q', '$n', '$e', '$d', '$hash_output', '$signv_id', '$sign_value','$senderID','$senderUN', '$pdf_name', '$pdf_newname', '$username_r', '$execution_timeK', '$execution_timeS','$execution_time')";
                     $sign_query = $connect->query($sign_sql);
     
                     //username kosong
@@ -119,8 +129,8 @@ if (isset($_POST['signnow'])) {
                             }
                         }
                         // simpan di database verification
-                        $ver_sql = "INSERT INTO verification (sign_id, received_id, sender_uname, sign_value, pdf_name, pdf_newname, validation) 
-                        VALUES ('$sign_idf', '$id_r', '$senderUN', '$get_sign', '$pdf_name','$pdf_newname', 'Belum diverifikasi')";
+                        $ver_sql = "INSERT INTO verification (sign_id, received_id, sender_uname, signv_id, sign_value, pdf_name, pdf_newname, validation) 
+                        VALUES ('$sign_idf', '$id_r', '$senderUN', '$signv_id','$sign_value', '$pdf_name','$pdf_newname', 'Not Verified')";
                         $ver_query = $connect->query($ver_sql);
     
                         if ($sign_query && $ver_query) {

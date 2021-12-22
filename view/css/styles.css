@@ -127,15 +127,30 @@
     border: 0.1px solid #111;
     
 }
-
+.contentmain .mainpage2 .dt-table{
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+.contentmain .mainpage2 .dt-table .dt-title{
+    width: 20%;
+}
+.contentmain .mainpage2 .dt-table .dt-dot{
+    width: 2%;
+}
+.contentmain .mainpage2 .dt-table .dt-value{
+    word-wrap: break-word;
+}
 @media (max-width: 991px) {
     
     .contentmain{
         margin-left: 0%;
         padding: 0 20px;
         width: 100%;
+        font-size: 55%;
     }
-    .sidebar,.tab-hide,.username li a i{
+    .sidebar
+    {
         display: none;
     }
 

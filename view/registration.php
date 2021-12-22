@@ -19,14 +19,14 @@ include("../controller/regist_controller.php");
 
 <body>
     <div class="log-reg">
-        <h1>Registrasi Akun</h1>
+        <h1>Account Registration</h1>
         
         <div class="card">
             <div class="card-body">
                 <form class="logreg-form" action="" method="POST" onsubmit="return pass_validation()" name="registration-form">
                     <div class="row mb-3">
                         <div class="col-lg-6">
-                            <label for="name" class="form-label">Nama</label>
+                            <label for="name" class="form-label">Name</label>
                             <input type="text" class="form-control" name="name">
                         </div>
                         <div class="col-lg-6">
@@ -40,7 +40,7 @@ include("../controller/regist_controller.php");
                     </div>
                     <div class="row mb-3">
                         <div class="col-lg-12">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="email" class="form-label">Email Address</label>
                             <input type="email" class="form-control" name="email">
                         </div>
 
@@ -57,14 +57,14 @@ include("../controller/regist_controller.php");
                     </div>
 
                     <div class="submit-logreg">
-                        <button type="submit" class="btn btn-primary" name="register">Registrasi</button>
+                        <button type="submit" class="btn btn-primary" name="register">Sign Up Now</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
     <div class="signup">
-        <p>Sudah punya akun?</p>
+        <p>Have an Account?</p>
         <a href="login.php">Sign in</a>
     </div>
 
