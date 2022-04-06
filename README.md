@@ -7,4 +7,4 @@ https://ieeexplore.ieee.org/document/9650121
 
 ## Preview
 ![PreviewImage](/preview/signature.png)
-![PreviewImage](/preview/verification.png)
+![PreviewImage](/preview/verification.jpg)
